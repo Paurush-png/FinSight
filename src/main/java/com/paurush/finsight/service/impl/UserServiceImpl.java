@@ -1,4 +1,7 @@
 package com.paurush.finsight.service.impl;
+
+import com.paurush.finsight.dto.LoginRequest;
+import com.paurush.finsight.exception.InvalidCredentialsException;
 import com.paurush.finsight.dto.RegisterRequest;
 import com.paurush.finsight.entity.User;
 import com.paurush.finsight.exception.EmailAlreadyExistsException;
@@ -29,5 +32,20 @@ public class UserServiceImpl implements UserService {
         String encodedPassword = passwordEncoder.encode(request.getPassword());
         User user = new User(request.getName(), normalizedEmail, encodedPassword);
         return userRepository.save(user);
+    }
+    @Override
+    public User loginUser(LoginRequest request) {
+        String normalizedEmail = request.getEmail()
+                .trim()
+                .toLowerCase();
+
+        User user = userRepository.findByEmail(normalizedEmail)
+                .orElseThrow(() -> new InvalidCredentialsException("Invalid email or password"));
+
+        if (!passwordEncoder.matches(request.getPassword(), user.getPassword())) {
+            throw new InvalidCredentialsException("Invalid email or password");
+        }
+
+        return user;
     }
 }

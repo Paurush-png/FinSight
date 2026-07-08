@@ -1,5 +1,7 @@
 package com.paurush.finsight.controller;
 
+import com.paurush.finsight.dto.LoginRequest;
+import com.paurush.finsight.dto.LoginResponse;
 import com.paurush.finsight.dto.RegisterRequest;
 import com.paurush.finsight.entity.User;
 import com.paurush.finsight.service.interfaces.UserService;
@@ -29,6 +31,16 @@ public class AuthController {
 
         return ResponseEntity
                 .status(HttpStatus.CREATED)
+                .body(response);
+    }
+
+    @PostMapping("/login")
+    public ResponseEntity<LoginResponse> login(@Valid @RequestBody LoginRequest request) {
+        userService.loginUser(request);
+        LoginResponse response = new LoginResponse("Login successful");
+
+        return ResponseEntity
+                .status(HttpStatus.OK)
                 .body(response);
     }
 }
