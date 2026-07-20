@@ -1,5 +1,6 @@
 package com.paurush.finsight.exception;
 
+import com.paurush.finsight.exception.PortfolioNotFoundException;
 import com.paurush.finsight.dto.ValidationErrorResponse;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import com.paurush.finsight.dto.ErrorResponse;
@@ -63,5 +64,34 @@ public class GlobalExceptionHandler {
         return ResponseEntity
                 .status(HttpStatus.UNAUTHORIZED)
                 .body(errorResponse);
+    }
+
+    @ExceptionHandler(PortfolioNotFoundException.class)
+    public ResponseEntity<ErrorResponse> handlePortfolioNotFoundException(
+            PortfolioNotFoundException ex
+    ) {
+
+        ErrorResponse response = new ErrorResponse(
+                LocalDateTime.now(),
+                HttpStatus.NOT_FOUND.value(),
+                HttpStatus.NOT_FOUND.getReasonPhrase(),
+                ex.getMessage()
+        );
+
+        return new ResponseEntity<>(response, HttpStatus.NOT_FOUND);
+    }
+    @ExceptionHandler(AssetNotFoundException.class)
+    public ResponseEntity<ErrorResponse> handleAssetNotFound(
+            AssetNotFoundException ex
+    ) {
+
+        ErrorResponse error = new ErrorResponse(
+                LocalDateTime.now(),
+                HttpStatus.NOT_FOUND.value(),
+                "Not Found",
+                ex.getMessage()
+        );
+
+        return ResponseEntity.status(HttpStatus.NOT_FOUND).body(error);
     }
 }

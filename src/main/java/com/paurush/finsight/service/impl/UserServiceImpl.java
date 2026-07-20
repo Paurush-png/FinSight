@@ -30,7 +30,11 @@ public class UserServiceImpl implements UserService {
         }
         // Hash the password before storing it
         String encodedPassword = passwordEncoder.encode(request.getPassword());
-        User user = new User(request.getName(), normalizedEmail, encodedPassword);
+        User user = User.builder()
+                .name(request.getName())
+                .email(normalizedEmail)
+                .password(encodedPassword)
+                .build();
         return userRepository.save(user);
     }
     @Override
